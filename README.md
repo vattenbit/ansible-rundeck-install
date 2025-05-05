@@ -7,5 +7,5 @@ This repository contains an Ansible playbook for installing and configuring Rund
 To run the playbook and deploy Rundeck, use the following command:
 
 ```bash
-ansible-playbook -i hosts ansible-rundeck-docker/main.yaml
+ansible-playbook -i hosts main.yaml -e "email=your-email@example.com domain=rundeck.domain.com"
 
