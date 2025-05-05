@@ -1,0 +1,69 @@
+---
+- name: Install Docker
+  ansible.builtin.dnf:
+    name: docker
+    state: present
+    update_cache: true
+
+- name: Start and enable Docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Ensure Docker service configuration directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Configure Docker daemon to enable API
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Re-execute systemd manager configuration
+  ansible.builtin.systemd:
+    daemon_reexec: true
+
+- name: Reload systemd manager configuration
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart Docker to apply changes
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
+- name: Ensure pip is installed
+  ansible.builtin.package:
+    name: python3-pip
+    state: present
+
+- name: Install Docker SDK for Python
+  ansible.builtin.pip:
+    name: docker
+    state: present
+
+- name: Install jsondiff for Python
+  ansible.builtin.pip:
+    name: jsondiff
+    state: present
+
+- name: Install Docker Compose
+  ansible.builtin.dnf:
+    name: docker-compose
+    state: present
+    update_cache: true
+
+- name: Init a new swarm with default parameters
+  community.docker.docker_swarm:
+    state: present

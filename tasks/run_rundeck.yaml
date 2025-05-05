@@ -1,0 +1,15 @@
+---
+- name: Copy Rundeck Compose file with variable substitution
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/files/rundeck-compose.yml.j2"
+    dest: /opt/rundeck-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Deploy Rundeck stack using Docker Stack module
+  community.docker.docker_stack:
+    name: rundeck
+    state: present
+    compose:
+      - /opt/rundeck-compose.yml

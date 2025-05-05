@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  rundeck:
+    image: rundeck/rundeck:5.11.1
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "4440:4440"
+    volumes:
+      - rundeck_data:/home/rundeck/server/data
+    environment:
+      RUNDECK_GRAILS_URL: "http://{{ domain }}"
+    networks:
+      - rundeck_network
+
+volumes:
+  rundeck_data:
+
+networks:
+  rundeck_network:
+    driver: overlay

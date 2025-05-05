@@ -1,0 +1,18 @@
+---
+# Copyright (c) 2025 Rafael García Álvarez
+# License: GNU General Public License v3.0
+- name: Ducker Rundeck container
+  hosts: rundecks
+  become: true
+  tasks:
+    - name: Install Docker
+      ansible.builtin.include_tasks:
+        file: tasks/install_docker.yaml
+
+    - name: Run Portainer container in Docker
+      ansible.builtin.include_tasks:
+        file: tasks/run_docker_tools.yaml
+
+    - name: Run Rundeck container in Docker
+      ansible.builtin.include_tasks:
+        file: tasks/run_rundeck.yaml

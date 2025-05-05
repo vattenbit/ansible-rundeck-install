@@ -1,0 +1,15 @@
+---
+- name: Copy Portainer Compose file
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/files/docker-tools-compose.yml"
+    dest: /opt/docker-tools-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Deploy Portainer stack using Docker Stack module
+  community.docker.docker_stack:
+    name: docker-tools
+    state: present
+    compose:
+      - /opt/docker-tools-compose.yml
